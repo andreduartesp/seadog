@@ -10,15 +10,10 @@ class QFileWriter : public QObject
     Q_PROPERTY(QString content READ content WRITE setContent)
 public:
     explicit QFileWriter(QObject *parent = 0);
-
     QString content() const;
     void setContent(const QString &content);
-
-signals:
-
 public slots:
     void writeFile();
-
 private:
     QString value;
 };

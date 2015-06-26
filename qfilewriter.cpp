@@ -2,7 +2,7 @@
 
 QFileWriter::QFileWriter(QObject *parent) : QObject(parent)
 {
-
+    this->value = "";
 }
 
 QString QFileWriter::content() const

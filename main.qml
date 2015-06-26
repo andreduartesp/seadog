@@ -8,23 +8,6 @@ ApplicationWindow {
     width: 320
     height: 480
     title: qsTr("Hello World")
-
-    QFileWriter{
-        id: fileWriter
-        content: ""
-    }
-
-    FolderListModel {
-        id: folderModel
-        nameFilters: ["*.png"]
-        folder: "file:///sdcard/tmp/"
-    }
-
-    Item{
-        id:atualFile
-        property int position: 0
-    }
-
     menuBar: MenuBar {
         Menu {
             title: qsTr("File")
@@ -35,14 +18,37 @@ ApplicationWindow {
         }
     }
 
+    QFileWriter{
+        id: fileWriter
+        content: ""
+    }
+
+    FolderListModel {
+        id: folderModel
+        nameFilters: ["*.png"]
+        folder: "images/sdcard/tmp/"
+    }
+
+    Item{
+        id:atualFile
+        property int position: 0
+        function nextFile(){
+            atualFile.position++
+            principalImage.source = folderModel.get(atualFile.position, "fileURL")
+            if(atualFile.position >= folderModel.count - 1)
+            {
+                fileWriter.writeFile()
+            }
+        }
+    }
+
     Image {
         id: principalImage
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width * 0.70
         height: parent.height * 0.80
-        source: "file:///sdcard/tmp/ColorTest1.png"
+        source: "images/tmp/ColorTest1.png"
     }
-
 
     Rectangle {
         anchors.bottom: parent.bottom
@@ -53,12 +59,7 @@ ApplicationWindow {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                            atualFile.position++
-                            principalImage.source = folderModel.get(atualFile.position, "fileURL")
-                            if(atualFile.position >= folderModel.count - 1)
-                            {
-                                fileWriter.writeFile()
-                            }
+                            atualFile.nextFile()
                        }
         }
         Text{
@@ -66,7 +67,6 @@ ApplicationWindow {
             text: qsTr("No")
         }
     }
-
 
     Rectangle {
         anchors.bottom: parent.bottom
@@ -78,12 +78,7 @@ ApplicationWindow {
             anchors.fill: parent
             onClicked: {
                             fileWriter.content += folderModel.get(atualFile.position, "fileName") + "\n"
-                            atualFile.position++
-                            principalImage.source = folderModel.get(atualFile.position, "fileURL")
-                            if(atualFile.position >= folderModel.count - 1)
-                            {
-                                fileWriter.writeFile()
-                            }
+                            atualFile.nextFile()
                        }
         }
         Text{

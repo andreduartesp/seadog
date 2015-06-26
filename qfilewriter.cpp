@@ -2,17 +2,17 @@
 
 QFileWriter::QFileWriter(QObject *parent) : QObject(parent)
 {
-    this->value = "";
+    this->content = "";
 }
 
-QString QFileWriter::content() const
+QString QFileWriter::getContent() const
 {
-    return this->value;
+    return this->content;
 }
 
-void QFileWriter::setContent(const QString &value)
+void QFileWriter::setContent(const QString &content)
 {
-    this->value = value;
+    this->content = content;
 }
 
 void QFileWriter::writeFile()
@@ -21,7 +21,7 @@ void QFileWriter::writeFile()
     QFile file(filename);
     if(file.open(QIODevice::ReadWrite))
     {
-        file.write((this->value + "\n").toStdString().c_str());
+        file.write((this->content + "\n").toStdString().c_str());
         file.close();
     }
 }

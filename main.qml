@@ -1,26 +1,31 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.1
 import Qt.labs.folderlistmodel 2.1
-import QFileWriter 1.0
 
 ApplicationWindow {
     visible: true
     width: 320
     height: 480
     title: qsTr("Hello World")
-    menuBar: MenuBar {
-        Menu {
-            title: qsTr("File")
-            MenuItem {
-                text: qsTr("Exit")
-                onTriggered: Qt.quit();
+
+
+    Connections {
+        target: fileWriter
+        onChangeFile: {
+            principalImage.source = folderModel.get(fileWriter.atualFile, "fileURL")
+            if(fileWriter.atualFile >= folderModel.count - 1)
+            {
+                noButton.visible = false
+                yesButton.visible = false
+                sendMailButton.visible = true
+            }
+            else
+            {
+                noButton.visible = true
+                yesButton.visible = true
+                sendMailButton.visible = false
             }
         }
-    }
-
-    QFileWriter{
-        id: fileWriter
-        content: ""
     }
 
     FolderListModel {
@@ -29,37 +34,25 @@ ApplicationWindow {
         folder: "images/"
     }
 
-    Item{
-        id:fileHelper
-        property int position: 0
-        function nextFile(){
-            fileHelper.position++
-            principalImage.source = folderModel.get(fileHelper.position, "fileURL")
-            if(fileHelper.position >= folderModel.count - 1)
-            {
-                fileWriter.writeFile()
-            }
-        }
-    }
-
     Image {
         id: principalImage
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width * 0.70
         height: parent.height * 0.80
-        source: "images/ColorTest1.png"
+        source: "images/ColorTest" + ('000' + (fileWriter.atualFile + 1)).substr(-3) + ".jpg"
     }
 
     Rectangle {
+        id: noButton
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        width: parent.width * 0.50
+        width: parent.width * 0.5
         height: parent.height * 0.1
         border.color: "#000000"
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                            fileHelper.nextFile()
+                            fileWriter.addVote("No");
                        }
         }
         Text{
@@ -69,21 +62,55 @@ ApplicationWindow {
     }
 
     Rectangle {
+        id: yesButton
         anchors.bottom: parent.bottom
         anchors.right: parent.right
-        width: parent.width * 0.50
+        width: parent.width * 0.5
         height: parent.height * 0.1
         border.color: "#000000"
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                            fileWriter.content += folderModel.get(fileHelper.position, "fileName") + "\n"
-                            fileHelper.nextFile()
+                            fileWriter.addVote("Yes");
                        }
         }
         Text{
             anchors.centerIn: parent;
             text: qsTr("Yes")
         }
+    }
+
+    Rectangle {
+        id: sendMailButton
+        visible: false
+        anchors.bottom: parent.bottom
+        anchors.right: parent.right
+        width: parent.width * 1
+        height: parent.height * 0.1
+        border.color: "#000000"
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                            fileWriter.sendEmail();
+                       }
+        }
+        Text{
+            anchors.centerIn: parent;
+            text: qsTr("Send Result")
+        }
+    }
+
+    Image {
+        anchors.top: parent.top
+        anchors.left: parent.left
+        width: parent.width * 0.15
+        height: parent.height * 0.1
+        MouseArea {
+            anchors.fill: parent
+            onClicked: {
+                            fileWriter.backFile()
+                       }
+        }
+        source: "images/back-icon.png"
     }
 }

@@ -25,17 +25,17 @@ ApplicationWindow {
 
     FolderListModel {
         id: folderModel
-        nameFilters: ["*.png"]
-        folder: "images/sdcard/tmp/"
+        nameFilters: ["*.jpg"]
+        folder: "images/"
     }
 
     Item{
-        id:atualFile
+        id:fileHelper
         property int position: 0
         function nextFile(){
-            atualFile.position++
-            principalImage.source = folderModel.get(atualFile.position, "fileURL")
-            if(atualFile.position >= folderModel.count - 1)
+            fileHelper.position++
+            principalImage.source = folderModel.get(fileHelper.position, "fileURL")
+            if(fileHelper.position >= folderModel.count - 1)
             {
                 fileWriter.writeFile()
             }
@@ -47,7 +47,7 @@ ApplicationWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width * 0.70
         height: parent.height * 0.80
-        source: "images/tmp/ColorTest1.png"
+        source: "images/ColorTest1.png"
     }
 
     Rectangle {
@@ -59,7 +59,7 @@ ApplicationWindow {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                            atualFile.nextFile()
+                            fileHelper.nextFile()
                        }
         }
         Text{
@@ -77,8 +77,8 @@ ApplicationWindow {
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                            fileWriter.content += folderModel.get(atualFile.position, "fileName") + "\n"
-                            atualFile.nextFile()
+                            fileWriter.content += folderModel.get(fileHelper.position, "fileName") + "\n"
+                            fileHelper.nextFile()
                        }
         }
         Text{

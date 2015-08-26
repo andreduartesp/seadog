@@ -39,7 +39,7 @@ ApplicationWindow {
         anchors.horizontalCenter: parent.horizontalCenter
         width: parent.width * 0.70
         height: parent.height * 0.80
-        source: "images/ColorTest" + ('000' + (fileWriter.atualFile + 1)).substr(-3) + ".jpg"
+        source: "images/" + ('000' + (fileWriter.atualFile)).substr(-3) + ".jpg"
     }
 
     Rectangle {

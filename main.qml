@@ -6,7 +6,7 @@ ApplicationWindow {
     visible: true
     width: 320
     height: 480
-    title: qsTr("Hello World")
+    title: qsTr("SeaDog app")
 
 
     Connections {
